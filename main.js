@@ -33,23 +33,36 @@ const projectSelect = document.getElementById('project-select');
 async function fetchProjects() {
   try {
     const response = await fetch('getProjects.php');
-    if (!response.ok) throw new Error('Network response was not ok');
-    
-    const projects = await response.json();
-    
+
+    if (!response.ok) {
+      const message = `HTTP error! status: ${response.status}`;
+      console.error('Error fetching projects:', message);
+      showTempMessage(`Error loading projects: ${message}`, '#ff0000');
+      return;
+    }
+
+    const data = await response.json();
+
+    if (data.status === 'error') {
+      console.error('Error fetching projects:', data.message, data.directory);
+      showTempMessage(`Error loading projects: ${data.message}`, '#ff0000');
+      return;
+    }
+
     // Clear existing options
     projectSelect.innerHTML = '<option value="">-- Please select a project --</option>';
-    
+
     // Add new options
-    projects.forEach(project => {
+    data.projects.forEach(project => {
       const option = document.createElement('option');
       option.value = project;
       option.textContent = project;
       projectSelect.appendChild(option);
     });
+
   } catch (error) {
     console.error('Error fetching projects:', error);
-    showTempMessage('Error loading projects', '#ff0000');
+    showTempMessage(`Error loading projects: ${error}`, '#ff0000');
   }
 }
 
@@ -63,7 +76,7 @@ function updateProjectOverlay(projectName) {
     map.removeControl(projectOverlay);
     projectOverlay = null;
   }
-  
+
   // Create new overlay if a project is selected
   if (projectName) {
     projectOverlay = L.control({position: 'topleft'});
