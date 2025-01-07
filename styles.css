@@ -1,85 +1,86 @@
 /**
- * styles.css
- * ==========
- * This file contains all styles for the Leaflet map application, including:
- * - Basic layout styles for the map and KML list
- * - Styles for KML list items and their interactions
- * - Project selection dropdown styles
- * - Color picker and checkbox styles
- * - Context menu styles and hover effects
- * - Fonts and text formatting
- * - Responsive design elements
- * - Animations and transitions for user interactions
- */
+     * styles.css
+     * ==========
+     * This file contains all styles for the Leaflet map application, including:
+     * - Basic layout styles for the map and KML list
+     * - Styles for KML list items and their interactions
+     * - Project selection dropdown styles
+     * - Color picker and checkbox styles
+     * - Context menu styles and hover effects
+     * - Fonts and text formatting
+     * - Responsive design elements
+     * - Animations and transitions for user interactions
+     */
 
-/* Basic reset and map container */
-body { 
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
+    /* Basic reset and map container */
+    body { 
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
 
-#map { 
-  height: 100vh;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
+    #map { 
+      height: 100vh;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
 
-/* KML list container */
-#kml-list {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: white;
-  padding: 15px;
-  z-index: 1000;
-  box-shadow: 0 0 15px rgba(0,0,0,0.2);
-  border-radius: 8px;
-  width: 350px;
-  max-height: 90vh;
-  overflow-y: auto;
-}
+    /* KML list container */
+    #kml-list {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 15px;
+      z-index: 1000;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      border-radius: 8px;
+      width: 350px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
 
-/* Project selection dropdown */
-#project-selection {
-  margin-bottom: 15px;
-}
+    /* Project selection dropdown */
+    #project-selection {
+      margin-bottom: 15px;
+    }
 
-#project-selection label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #333;
-}
+    #project-selection label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
 
-#project-select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-  font-size: 14px;
-  color: #333;
-}
+    #project-select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: white;
+      font-size: 14px;
+      color: #333;
+    }
 
-/* Project name overlay */
-.project-name-overlay {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 10px 20px;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  z-index: 1000;
-  font-size: 1.2em;
-  font-weight: bold;
-  color: #333;
-  white-space: nowrap;
-}
+    /* Project name overlay */
+    .project-name-overlay {
+      position: fixed; /* Changed from absolute to fixed */
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 10px 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 1000;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #333;
+      white-space: nowrap;
+      text-align: center; /* Ensure text is centered */
+    }
 
-/* Rest of the existing styles */
-/* ... (previous styles remain unchanged) ... */
+    /* Rest of the existing styles */
+    /* ... (previous styles remain unchanged) ... */
