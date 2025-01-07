@@ -15,7 +15,7 @@ const shadowLineWeight = mainLineWeight * 2; // Weight of the shadow line
 
 /**
  * Processes multiple KML files
- * @param {FileList} files - List of KML files to process
+ * @param {FileList|Array} files - List of KML files to process
  * @param {L.Map} map - Leaflet map instance
  * @param {HTMLElement} kmlItems - Container for KML list items
  * @param {Array} layers - Array to store layer information
@@ -53,60 +53,76 @@ function processKMLFiles(files, map, kmlItems, layers) {
  * @param {Array} layers - Array to store layer information
  */
 function processKMLFile(file, map, kmlItems, layers) {
-  const reader = new FileReader();
-  
-  // Handle file reading completion
-  reader.onload = (e) => {
-    const kml = e.target.result;
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
     
-    // Parse KML content
-    const parser = new DOMParser();
-    const kmlDoc = parser.parseFromString(kml, 'text/xml');
-    
-    // Convert KML to GeoJSON
-    const geojson = toGeoJSON.kml(kmlDoc);
+    // Handle file reading completion
+    reader.onload = (e) => {
+      const kml = e.target.result;
+      
+      // Parse KML content
+      const parser = new DOMParser();
+      const kmlDoc = parser.parseFromString(kml, 'text/xml');
+      
+      // Convert KML to GeoJSON
+      const geojson = toGeoJSON.kml(kmlDoc);
 
-    // Create shadow layer (black background line)
-    const shadowLayer = L.geoJSON(geojson, {
-      style: {
-        color: '#000000',
-        weight: shadowLineWeight,
-        opacity: 0.5
-      },
-      pointToLayer: () => null // Skip point features
-    }).addTo(map);
+      // Create shadow layer (black background line)
+      const shadowLayer = L.geoJSON(geojson, {
+        style: {
+          color: '#000000',
+          weight: shadowLineWeight,
+          opacity: 0.5
+        },
+        pointToLayer: () => null // Skip point features
+      }).addTo(map);
 
-    // Create main visualization layer
-    const mainLayer = L.geoJSON(geojson, {
-      style: {
-        color: '#ff0000', // Default red color
-        weight: mainLineWeight
-      },
-      onEachFeature: (feature, layer) => {
-        // Add popup if feature has a name
-        if (feature.properties && feature.properties.name) {
-          layer.bindPopup(feature.properties.name);
-        }
-      },
-      pointToLayer: () => null // Skip point features
-    }).addTo(map);
+      // Create main visualization layer
+      const mainLayer = L.geoJSON(geojson, {
+        style: {
+          color: '#ff0000', // Default red color
+          weight: mainLineWeight
+        },
+        onEachFeature: (feature, layer) => {
+          // Add popup if feature has a name
+          if (feature.properties && feature.properties.name) {
+            layer.bindPopup(feature.properties.name);
+          }
+        },
+        pointToLayer: () => null // Skip point features
+      }).addTo(map);
 
-    // Store layer information
-    const layerInfo = {
-      name: file.name,
-      mainLayer,
-      shadowLayer,
-      checkbox: null,
-      color: '#ff0000' // Default color
+      // Store layer information
+      const layerInfo = {
+        name: file.name,
+        mainLayer,
+        shadowLayer,
+        checkbox: null,
+        color: '#ff0000' // Default color
+      };
+      layers.push(layerInfo);
+
+      // Create list item for the KML file
+      createKMLListItem(file, layerInfo, kmlItems, layers, map);
+      resolve();
     };
-    layers.push(layerInfo);
-
-    // Create list item for the KML file
-    createKMLListItem(file, layerInfo, kmlItems, layers, map);
-  };
-  
-  // Start reading the file
-  reader.readAsText(file);
+    
+    // Start reading the file
+    if (file.size > 0) {
+      reader.readAsText(file);
+    } else {
+      // Handle server-side files
+      fetch(`Befahrungsprojekte/${currentProject}/${file.name}`)
+        .then(response => response.text())
+        .then(kml => {
+          reader.readAsText(new Blob([kml], { type: 'text/xml' }));
+        })
+        .catch(error => {
+          console.error('Error loading KML file:', error);
+          reject(error);
+        });
+    }
+  });
 }
 
 /**

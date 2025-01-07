@@ -8,14 +8,13 @@
       It includes:
       - The map container
       - KML file list and controls
-      - Project selection dropdown
       - Color picker for KML styling
       - All necessary script and style imports
     -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Leaflet Map with Project Selection</title>
-    
+    <title>Leaflet Map with Select All Checkbox</title>
+
     <!-- External CSS Imports -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -24,19 +23,19 @@
   <body>
     <!-- Main map container -->
     <div id="map"></div>
-    
+
+    <!-- Project display at the top center -->
+    <div id="selected-project-display"></div>
+
     <!-- Side panel for KML controls -->
     <div id="kml-list">
       <h3>KML Files</h3>
-      
+
       <!-- Project selection dropdown -->
-      <div id="project-selection">
-        <label for="project-select">Select Project:</label>
-        <select id="project-select">
-          <option value="">-- Please select a project --</option>
-        </select>
-      </div>
-      
+      <select id="project-selector">
+        <option value="">Select Project</option>
+      </select>
+
       <!-- Color picker for KML styling -->
       <div id="color-picker">
         <div class="color-box" style="background-color: #ff0000;" data-color="#ff0000"></div>
@@ -48,15 +47,15 @@
         <div class="color-box" style="background-color: #ff8000;" data-color="#ff8000"></div>
         <div class="color-box" style="background-color: #8000ff;" data-color="#8000ff"></div>
       </div>
-      
+
       <!-- Container for KML file list items -->
       <div id="kml-items"></div>
     </div>
-    
+
     <!-- External JavaScript Imports -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@mapbox/togeojson@0.16.0/togeojson.js"></script>
-    
+
     <!-- Application Scripts -->
     <script src="kmlProcessor.js"></script>
     <script src="uiUtils.js"></script>

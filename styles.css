@@ -1,86 +1,201 @@
 /**
-     * styles.css
-     * ==========
-     * This file contains all styles for the Leaflet map application, including:
-     * - Basic layout styles for the map and KML list
-     * - Styles for KML list items and their interactions
-     * - Project selection dropdown styles
-     * - Color picker and checkbox styles
-     * - Context menu styles and hover effects
-     * - Fonts and text formatting
-     * - Responsive design elements
-     * - Animations and transitions for user interactions
-     */
+ * styles.css
+ * ==========
+ * This file contains all styles for the Leaflet map application, including:
+ * - Basic layout styles for the map and KML list
+ * - Styles for KML list items and their interactions
+ * - Color picker and checkbox styles
+ * - Context menu styles and hover effects
+ * - Fonts and text formatting
+ * - Responsive design elements
+ * - Animations and transitions for user interactions
+ */
 
-    /* Basic reset and map container */
-    body { 
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
+/* Basic reset and map container */
+body {
+  margin: 0; /* Remove default body margin */
+}
 
-    #map { 
-      height: 100vh;
-      width: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-    }
+#map {
+  height: 100vh; /* Full viewport height */
+}
 
-    /* KML list container */
-    #kml-list {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: white;
-      padding: 15px;
-      z-index: 1000;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      border-radius: 8px;
-      width: 350px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
+/* Style for the project display */
+#selected-project-display {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  font-size: 1.2em;
+  font-weight: bold;
+}
 
-    /* Project selection dropdown */
-    #project-selection {
-      margin-bottom: 15px;
-    }
+/* KML list container */
+#kml-list {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  padding: 10px;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  max-height: 90vh;
+  overflow-y: auto;
+  width: 345px;
+}
 
-    #project-selection label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-      color: #333;
-    }
+/* Project selector dropdown */
+#project-selector {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1em;
+}
 
-    #project-select {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: white;
-      font-size: 14px;
-      color: #333;
-    }
+/* Folder creation form styles */
+#folder-name {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
 
-    /* Project name overlay */
-    .project-name-overlay {
-      position: fixed; /* Changed from absolute to fixed */
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: rgba(255, 255, 255, 0.9);
-      padding: 10px 20px;
-      border-radius: 6px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      z-index: 1000;
-      font-size: 1.2em;
-      font-weight: bold;
-      color: #333;
-      white-space: nowrap;
-      text-align: center; /* Ensure text is centered */
-    }
+#create-folder-btn {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
-    /* Rest of the existing styles */
-    /* ... (previous styles remain unchanged) ... */
+#create-folder-btn:hover {
+  background-color: #005ba1; /* Darker blue on hover */
+}
+
+/* KML list item styles */
+.kml-item {
+  position: relative;
+  margin: 5px 0;
+  padding: 5px 5px 5px 16px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none; /* Prevent text selection */
+}
+
+/* Color stripe indicating KML color */
+.color-stripe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6px;
+  height: 100%;
+}
+
+/* Hover and selection states */
+.kml-item:hover {
+  background: #f0f0f0;
+}
+
+.kml-item.selected {
+  background-color: #e3f2fd; /* Light blue for selected items */
+}
+
+/* Delete icon styles */
+.delete-icon {
+  color: #ff4444;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.delete-icon:hover {
+  color: #cc0000; /* Darker red on hover */
+}
+
+/* Color picker styles */
+#color-picker {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.color-box:hover {
+  border-color: #000; /* Darker border on hover */
+}
+
+/* Text styles */
+.kml-item span {
+  font-family: Arial, sans-serif;
+  font-size: 0.7em;
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 230px;
+  user-select: none; /* Prevent text selection */
+}
+
+/* Large number display */
+.kml-number {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 8em;
+  margin-right: 4px;
+  margin-left: 2px;
+  font-weight: bold;
+  color: #0078d4;
+  user-select: none; /* Prevent text selection */
+}
+
+/* Context menu styles */
+#kml-context-menu {
+  font-family: Arial, sans-serif;
+  font-size: 0.8em;
+  background: white;
+  border: 1px solid #ddd;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  border-radius: 3px;
+  min-width: 180px;
+}
+
+#kml-context-menu div {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: #333;
+}
+
+#kml-context-menu div:hover {
+  background-color: #f5f5f5; /* Light gray on hover */
+}
+
+/* Eye icon styles */
+.fa-eye,
+.fa-eye-slash {
+  color: #0078d4;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.fa-eye-slash {
+  color: #ccc; /* Gray for hidden items */
+}

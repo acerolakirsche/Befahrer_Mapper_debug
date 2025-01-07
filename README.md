@@ -2,16 +2,19 @@
 # Leaflet Map with KML Import and Management
 
 ## Vorab-Prompt:
-Vorabinformationen für Dich:
-- Bitte in Deinen Antworten immer vollständigen Code generieren, niemals nur Snippets.
-- Bitte den Code immer ausführlich mit englischen Kommentaren versehen, damit er gut lesbar für Anfänger ist.
-- vorhandene Kommentare im Code nicht wegnehmen, sondern höchstens aktualisieren, wenn eine relevante Änderung gemacht wird.
-- Das Projekt liegt auf dem Webspace von STRATO, und man kann dort mit php auch Serverfunktionalität nutzen.
-- Niemals Vite nutzen.
-- Niemals hier in der Entwicklungsumgebung einen WebContainer starten.
-- Niemals ES-Module nutzen.
-- Der Code darf keine CORS Probleme verursachen, also bitte auf Kompatibilität achten!
-  Bitte jetzt noch nichts ändern. Es war nur eine Information für Dich.
+    Vorabinformationen für Dich:
+		Implementiere stets Deine Änderungen in die vorhandenen Dateien, und achte darauf, dass Du die von den Änderungen nicht betroffenen Bereiche nicht löschst oder unbrauchbar machst.
+		Füge keine Zeilennummern an den Beginn jeder Zeile.
+		Beachte, dass, wenn Du 'create' machen willst, Du bitte einfach beispielsweise 'create dateiname.js' machst. Also ohne einen Pfad davor!
+		Bitte den Code immer ausführlich mit englischen Kommentaren versehen, damit er gut lesbar für Anfänger ist.
+		Bitte Kommentare im Code gegebenenfalls aktualisieren.
+    Das Projekt liegt auf dem Webspace von STRATO, und man kann dort mit php auch Serverfunktionalität nutzen.
+    Niemals Vite nutzen.
+    Niemals hier in der Entwicklungsumgebung einen WebContainer starten.
+    Niemals ES-Module nutzen.
+    Der Code darf keine CORS Probleme verursachen, also bitte auf Kompatibilität achten!
+    
+    Bitte jetzt noch nichts ändern. Es war nur eine Information für Dich.
 
 ## Project Description
 This project is a web-based application that allows users to import KML files (Keyhole Markup Language) via drag & drop onto an interactive map. The application provides a variety of features for managing and visualizing KML data, including color selection, zoom functions, and a clear display of imported files.

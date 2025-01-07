@@ -1,60 +1,29 @@
 <?php
 /**
  * getProjects.php
- * ===============
- * This PHP script returns a JSON list of available projects
- * by scanning the Projects directory. Includes detailed error logging and execution check.
+ * ================
+ * This PHP script reads the subdirectories within the 'Befahrungsprojekte' directory
+ * and returns them as a JSON array. This is used to populate the project
+ * dropdown menu in the user interface.
  */
 
-header('Content-Type: application/json');
+$projectDir = 'Befahrungsprojekte';
+$projects = [];
 
-// Log the start of the script execution and the current directory
-error_log('getProjects.php: Script execution started.');
-error_log('getProjects.php: __DIR__ value: ' . __DIR__);
-
-$response = ['status' => 'error', 'message' => 'Unknown error']; // Default error response
-
-try {
-    // Define the path to the Projects directory
-    $projectsDir = __DIR__ . '/Projects'; // Korrigierter Pfad
-
-    // Log the directory path being used
-    error_log('getProjects.php: Checking directory: ' . $projectsDir);
-
-    // Verify directory exists
-    if (!is_dir($projectsDir)) {
-        throw new Exception('Projects directory not found at: ' . $projectsDir);
+// Check if the directory exists
+if (is_dir($projectDir)) {
+    // Scan the directory for subdirectories
+    $items = scandir($projectDir);
+    foreach ($items as $item) {
+        if ($item != '.' && $item != '..' && is_dir($projectDir . '/' . $item)) {
+            $projects[] = $item;
+        }
     }
-
-    // Get all directories in the Projects folder
-    $projects = array_filter(glob($projectsDir . '/*'), 'is_dir');
-
-    // Extract just the folder names
-    $projectNames = array_map('basename', $projects);
-
-    // Log the found project names
-    error_log('getProjects.php: Found projects: ' . implode(', ', $projectNames));
-
-    // Verify we found some projects
-    if (empty($projectNames)) {
-        throw new Exception('No projects found in directory: ' . $projectsDir);
-    }
-
-    $response = [
-        'status' => 'success',
-        'projects' => $projectNames
-    ];
-
-} catch (Exception $e) {
-    // Log the exception message and the directory
-    error_log('getProjects.php: Exception: ' . $e->getMessage() . ' in directory: ' . $projectsDir);
-    $response = [
-        'status' => 'error',
-        'message' => $e->getMessage(),
-        'directory' => $projectsDir
-    ];
-    http_response_code(500); // Ensure the 500 status code is sent
 }
 
-echo json_encode($response);
+// Set the content type to JSON
+header('Content-Type: application/json');
+
+// Return the projects as a JSON array
+echo json_encode($projects);
 ?>

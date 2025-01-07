@@ -4,7 +4,6 @@
  * This is the main script that initializes and controls the application.
  * It handles:
  * - Map initialization
- * - Project selection and overlay display
  * - Drag and drop functionality for KML files
  * - Layer management
  * - Global variables and state
@@ -18,85 +17,117 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Global variables
+// Set up drag and drop handlers for the map
+const dropArea = document.getElementById('map');
+
+// Handle drag over event
+dropArea.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  dropArea.style.backgroundColor = '#f0f0f0'; // Visual feedback
+});
+
+// Handle drag leave event
+dropArea.addEventListener('dragleave', () => {
+  dropArea.style.backgroundColor = ''; // Reset background
+});
+
+// Handle drop event
+dropArea.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropArea.style.backgroundColor = ''; // Reset background
+
+  // Get dropped files
+  const files = e.dataTransfer.files;
+
+  // Process KML files and get results
+  const { ignoredFiles, addedFiles } = processKMLFiles(files, map, kmlItems, layers);
+
+  // Show messages for ignored and added files
+  let ignoreMessageElement = null;
+  if (ignoredFiles.length > 0) {
+    const message = `<b>Ignored (duplicates):</b>\n${ignoredFiles.join('\n')}`;
+    ignoreMessageElement = showTempMessage(message, '#ffa500'); // Orange for ignored
+  }
+
+  if (addedFiles.length > 0) {
+    const message = `<b>Successfully added:</b>\n${addedFiles.join('\n')}`;
+    setTimeout(() => {
+      // Position success message below ignore message if it exists
+      const offset = ignoreMessageElement ? ignoreMessageElement.offsetHeight + 20 : 0;
+      showTempMessage(message, '#4CAF50', 5000, offset); // Green for success
+    }, 100);
+  }
+});
+
+// Global variables for KML layers and list items
 const layers = []; // Stores information about all KML layers
 const kmlItems = document.getElementById('kml-items'); // Container for KML list items
-let selectedProject = null; // Currently selected project
-let projectOverlay = null; // Project name overlay
-
-// Initialize project selection
-const projectSelect = document.getElementById('project-select');
+const projectSelector = document.getElementById('project-selector');
+const selectedProjectDisplay = document.getElementById('selected-project-display');
+let currentProject = null; // Track currently selected project
 
 /**
- * Fetches available projects from the server
+ * Loads KML files from selected project folder
+ * @param {string} projectName - Name of the project folder
  */
-async function fetchProjects() {
+async function loadProjectKMLs(projectName) {
+  if (projectName === currentProject) return; // Skip if same project selected
+  
+  // Clear existing layers and list
+  layers.forEach(layerInfo => {
+    map.removeLayer(layerInfo.mainLayer);
+    map.removeLayer(layerInfo.shadowLayer);
+  });
+  layers.length = 0;
+  kmlItems.innerHTML = '';
+  
   try {
-    const response = await fetch('getProjects.php');
-
-    if (!response.ok) {
-      const message = `HTTP error! status: ${response.status}`;
-      console.error('Error fetching projects:', message);
-      showTempMessage(`Error loading projects: ${message}`, '#ff0000');
-      return;
+    // Fetch directory listing
+    const response = await fetch(`Befahrungsprojekte/${projectName}/`);
+    const text = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+    
+    // Extract KML files from directory listing
+    const kmlFiles = Array.from(doc.querySelectorAll('a'))
+      .map(a => a.textContent)
+      .filter(name => name.endsWith('.kml'))
+      .map(name => new File([], name));
+    
+    if (kmlFiles.length > 0) {
+      // Process each KML file from the server
+      for (const file of kmlFiles) {
+        await processKMLFile(file, map, kmlItems, layers);
+      }
     }
+    
+    currentProject = projectName;
+    selectedProjectDisplay.textContent = projectName;
+  } catch (error) {
+    console.error('Error loading project KMLs:', error);
+    showTempMessage('Error loading project KMLs', '#ff4444');
+  }
+}
 
-    const data = await response.json();
-
-    if (data.status === 'error') {
-      console.error('Error fetching projects:', data.message, data.directory);
-      showTempMessage(`Error loading projects: ${data.message}`, '#ff0000');
-      return;
-    }
-
-    // Clear existing options
-    projectSelect.innerHTML = '<option value="">-- Please select a project --</option>';
-
-    // Add new options
-    data.projects.forEach(project => {
+// Fetch and populate the project dropdown
+fetch('getProjects.php')
+  .then(response => response.json())
+  .then(projects => {
+    projects.forEach(project => {
       const option = document.createElement('option');
       option.value = project;
       option.textContent = project;
-      projectSelect.appendChild(option);
+      projectSelector.appendChild(option);
     });
-
-  } catch (error) {
+  })
+  .catch(error => {
     console.error('Error fetching projects:', error);
-    showTempMessage(`Error loading projects: ${error}`, '#ff0000');
-  }
-}
+  });
 
-/**
- * Updates the project name overlay
- * @param {string} projectName - The name of the selected project
- */
-function updateProjectOverlay(projectName) {
-  // Remove existing overlay if present
-  if (projectOverlay) {
-    map.removeControl(projectOverlay);
-    projectOverlay = null;
+// Add event listener to the project selector
+projectSelector.addEventListener('change', function() {
+  const selectedProject = this.value;
+  if (selectedProject) {
+    loadProjectKMLs(selectedProject);
   }
-
-  // Create new overlay if a project is selected
-  if (projectName) {
-    projectOverlay = L.control({position: 'topleft'});
-    projectOverlay.onAdd = () => {
-      const div = L.DomUtil.create('div', 'project-name-overlay');
-      div.innerHTML = `Selected Project: ${projectName}`;
-      return div;
-    };
-    projectOverlay.addTo(map);
-  }
-}
-
-// Handle project selection change
-projectSelect.addEventListener('change', (e) => {
-  selectedProject = e.target.value;
-  updateProjectOverlay(selectedProject);
 });
-
-// Initialize project list on page load
-fetchProjects();
-
-// Rest of the existing code remains unchanged
-/* ... (previous code remains unchanged) ... */
